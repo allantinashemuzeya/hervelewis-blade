@@ -123,4 +123,15 @@ return [
         'store' => env('APP_MAINTENANCE_STORE', 'database'),
     ],
 
+    /*
+    |--------------------------------------------------------------------------
+    | CUSTOM CONFIGURATION
+    |--------------------------------------------------------------------------
+    */
+
+    'api_base_url' => env('API_BASE_URL', 'http://hervelewis-cms.ddev.site/'),
+    'api_base_endpoint' => env('API_BASE_ENDPOINT', 'http://hervelewis-cms.ddev.site/jsonapi/'),
+    'api_username' => env('API_USERNAME', 'amuzeya'),
+    'api_password' => env('API_PASSWORD', 'Kungfucool24!!'),
+
 ];
