@@ -1,4 +1,5 @@
-<!DOCTYPE html>
+@php use Illuminate\Support\Facades\Route; @endphp
+    <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -6,7 +7,7 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
 
     <!-- Page Title -->
-    <title>Anita | Creative Photography</title>
+    <title>Hervé Lewis: Photographer, Art Gallery & Studio in Paris</title>
 
     <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@600;800&family=Rajdhani:wght@700&display=swap"
@@ -31,6 +32,15 @@
 <!-- Fullscreen Menu -->
 <x-fullscreen-menu/>
 
+
+@if(str_contains(Route::currentRouteName() ,'album') && isset($data->cover))
+    <!-- Page Background -->
+    <div class="anita-page-background-wrap">
+        <div class="anita-page-background" data-src="{{$data->cover->url}}" data-opacity="0.5"></div>
+    </div>
+
+@endif
+
 <!-- Page Main -->
 <main class="anita-main">
     @yield('content')
@@ -44,9 +54,14 @@
 <script src="{{asset('js/core.js')}}"></script>
 
 <script>
+
     const d_anita_config = {!! json_encode($config) !!};
     /* --- Activate Anita Core --- */
-    let anita = new Anita( d_anita_config );
+
+    // function init() {
+    let anita = new Anita(d_anita_config);
+    // }
+    // setTimeout(()=> init(), 3000);
 </script>
 
 </body>

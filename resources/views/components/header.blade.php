@@ -3,8 +3,8 @@
     <div class="anita-header-inner">
         <div class="anita-logo-wrapper">
             <!-- Logo -->
-            <a href="index.html" class="anita-logo is-retina">
-                <img src="{{asset('img/logo.png')}}" alt="Anita Photography" width="400" height="106">
+            <a href="/" class="anita-logo is-retina">
+                <img src="{{asset('img/logo.png')}}" alt="Hervé Lewis" width="400" height="106">
             </a>
         </div>
         <div class="anita-menu-wrapper">

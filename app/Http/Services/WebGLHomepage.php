@@ -10,22 +10,23 @@ class WebGLHomepage implements WebGLHomepageInterface
 {
 
 
-    protected $included = [];
-    protected $data = [];
+    protected array $included = [];
+    protected array $data = [];
 
     public function getHomepageData(): \stdClass
     {
         $base_url = Config::get('app.api_base_endpoint');
-        $client = $this->getAuthenticatedClient();
+        $client = $this-> getAuthenticatedClient();
         $componentInclude = "field_components";
 
         $componentSlidesInclude           = $componentInclude . ".field_webgl_slide";
+        $componentSlidesAlbum             = $componentSlidesInclude.".field_album";
         $componentSlidesMediaInclude      = $componentSlidesInclude.".field_media_file";
         $componentSlidesMediaImageInclude = $componentSlidesMediaInclude.".field_media_image";
         $componentSlidesMediaVideoInclude = $componentSlidesMediaInclude.".field_media_video_file";
 
         $includes = "include=$componentInclude,$componentSlidesInclude,$componentSlidesMediaInclude,
-        $componentSlidesMediaImageInclude,$componentSlidesMediaVideoInclude";
+        $componentSlidesMediaImageInclude,$componentSlidesMediaVideoInclude,$componentSlidesAlbum";
 
         $response = $client->get($base_url. "/node/homepage?$includes");
         $response =  json_decode($response->getBody()->getContents(), true);
@@ -46,9 +47,6 @@ class WebGLHomepage implements WebGLHomepageInterface
 
     public function getAuthenticatedClient(): Client
     {
-        // TODO: Implement getAuthenticatedClient() method.
-
-
         $headers = [
             'Authorization' => 'Basic ' . base64_encode(Config::get('app.api_username') . ':' . Config::get('app.api_password')),
             'Content-Type'  => 'application/json',
@@ -58,28 +56,26 @@ class WebGLHomepage implements WebGLHomepageInterface
         return new Client(['headers' => $headers]);
     }
 
-    private function processComponents()
+    private function processComponents(): array
     {
         $components = [];
         foreach ($this->included as $component) {
             if($component['type'] === 'paragraph--webgl_carousel_gallery'){
-                $new_component = new \stdClass();
-                $new_component->type = $component['type'];
-                $new_component->id = $component['id'];
-                $slidesData = $component['relationships']['field_webgl_slide']['data'];
+                $new_component         = new \stdClass();
+                $slidesData            = $component['relationships']['field_webgl_slide']['data'];
                 $new_component->slides = $this->processCarouselSlides($slidesData);
-
-                $components[] = $new_component;
+                $components[]          = $new_component;
+                $new_component->type   = $component['type'];
+                $new_component->id     = $component['id'];
             }
         }
         return $components;
     }
 
-    private function processCarouselSlides($data)
+    private function processCarouselSlides($data): array
     {
         $slides = [];
         foreach ($data as $slide) {
-
             if($slide['type'] === "paragraph--webgl_carousel_slide"){
                 $slideData = $this->getSlideData($slide['id']);
                 $slides[] = $slideData;
@@ -91,17 +87,33 @@ class WebGLHomepage implements WebGLHomepageInterface
 
     private function getSlideData($id)
     {
-
         $slideData = new \stdClass();
         foreach ($this->included as $pSlide) {
             if($pSlide['id'] === $id){
                 $slideData->title      = $pSlide['attributes']['field_title'];
                 $slideData->order      = $pSlide['attributes']['field_order'];
                 $slideData->resolution = $this->cleanDimensions($pSlide['attributes']['field_media_resolution']);
-                $slideData->media = $this->getSlideMedia($pSlide['relationships']['field_media_file']['data']['id']);
+                $slideData->media      = $this->getSlideMedia($pSlide['relationships']['field_media_file']['data']['id']);
+                $slideData->album      = $this->getAlbum();
                 return $slideData;
             }
         }
+    }
+
+    private function getAlbum(): \stdClass
+    {
+        $nb = new \stdClass();
+        foreach ($this->included as $album) {
+
+            if($album['type'] === 'node--album'){
+                $nb->id   = $album['id'];
+                $nb->name = $album['attributes']['title'];
+                $nb->description = $album['attributes']['field_description'];
+                $nb->url = $album['attributes']['path']['alias'] . "/".$album['id'];
+                return $nb;
+            }
+        }
+        return $nb;
     }
 
     private function getSlideMedia(mixed $id)
@@ -126,7 +138,6 @@ class WebGLHomepage implements WebGLHomepageInterface
                 }
 
                 $mediaData->url  = $this->getSlideMediaFileUrl($mediaData->fileId);
-
                 return $mediaData;
             }
         }
@@ -134,10 +145,9 @@ class WebGLHomepage implements WebGLHomepageInterface
 
     private function getSlideMediaFileUrl(mixed $fileId)
     {
-        $base_url = Config::get('app.api_base_url');
         foreach ($this->included as $mediaFile) {
             if($mediaFile['id'] === $fileId && $mediaFile['type'] === 'file--file'){
-                return $base_url . $mediaFile['attributes']['uri']['url'];
+                return '/cms-files/web'.$mediaFile['attributes']['uri']['url'];
             }
         }
 

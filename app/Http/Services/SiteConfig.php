@@ -50,7 +50,7 @@ class SiteConfig implements SiteConfigInterface
         $config = new \stdClass();
         $config->back2top               = $data['field_anita_back2top'];
         $config->back2top_label         = $data['field_anita_back2top_label'];
-        $config->fs_menu_delay          = $data['field_anita_fs_menu_delay'];
+        $config->fs_menu_delay          = $data['field_anita_fs_delay'];
         $config->image_drag_protection  = $data['field_anita_image_drag_protectio'];
         $config->int_cursor             = $data['field_anita_interactive_cursor'];
         $config->disable_right_click    = $data['field_anita_disable_right_click'];

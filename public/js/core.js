@@ -842,7 +842,6 @@ class Anita {
                 let $socials = jQuery('<ul class="anita-socials-list"/>').appendTo(this);
                 console.log(_self.options.socials);
                 for ( const [classname, item] of Object.entries(_self.options.socials) ) {
-                    debugger;
                     $socials.append('<li class="anita-socials--'+ classname +'"><a href="' + item.url + '">' + (item.label ? item.label : '') + '</a></li>');
                 }
             });
@@ -858,7 +857,7 @@ class Anita {
         // PhotoSwipe Lightbox
         if ( jQuery('.anita-lightbox-link').length ) {
             if ( typeof PhotoSwipe !== 'function' ) {
-                jQuery.getScript('js/lib/photoswipe.min.js').done(function() {
+                jQuery.getScript('/js/lib/photoswipe.min.js').done(function() {
                     if ( _self.pswp ) {
                         _self.pswp.isReady = true;
                     }
@@ -1673,7 +1672,7 @@ class Anita {
                 });
             }
             if ( typeof Anita_BrickWall !== 'function' ) {
-                jQuery.getScript('js/anita-brickwall.js').done(function() {
+                jQuery.getScript('/js/anita-brickwall.js').done(function() {
                     anita_init_brickwall();
                 });
             } else {

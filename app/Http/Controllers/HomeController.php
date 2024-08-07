@@ -2,25 +2,24 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Services\Album;
+use App\Facades\AnitaConfig;
 use App\Http\Services\WebGLHomepage;
-use Illuminate\Http\Request;
+use Illuminate\Contracts\View\Factory;
+use Illuminate\Contracts\View\View;
+use Illuminate\Foundation\Application;
 
 class HomeController extends Controller
 {
     //
 
-    public function index()
+    public function index(WebGLHomepage $webGLHomepage): View|Factory|Application
     {
-        $menu = ConfigController::getMenu();
-
-        $homePageData = (new WebGLHomepage())->getHomepageData();
-        // Get the homepage data from the WebGLHomepage service
+        $homePageData = $webGLHomepage->getHomepageData();
 
         return view('Home', [
-            'config' => ConfigController::getConfig(),
-            'menu' => $menu,
-            'homePageData' => $homePageData,
+            'config' => AnitaConfig::getConfig(),
+            'menu' => AnitaConfig::getMenu(),
+            'data' => $homePageData,
         ]);
     }
 
